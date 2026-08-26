@@ -117,13 +117,71 @@ header.header {
   transform: translateY(-1px) !important;
 }
 
-/* 页面内容避让顶部 60px 导航栏 */
-.container,
-.main-inner {
+/* 页面内容避让顶部 60px 导航栏 & 底部页脚贴底 (Sticky Footer) */
+body {
+  min-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.container {
+  flex: 1 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
   padding-top: 40px !important;
 }
+
+.main-inner {
+  flex: 1 0 auto !important;
+  min-height: calc(100vh - 180px) !important;
+}
+
+footer.footer {
+  margin-top: auto !important;
+  width: 100% !important;
+}
+
 .sidebar {
   top: 75px !important;
+}
+
+/* 搜索浮层与弹窗美化 (高层级与毛玻璃) */
+.search-pop-overlay {
+  z-index: 99999 !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.search-popup {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25) !important;
+  max-width: 680px !important;
+  margin-top: 90px !important;
+}
+
+.search-popup .search-header {
+  background: rgba(90, 125, 154, 0.12) !important;
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
+  padding: 10px 16px !important;
+}
+
+.search-popup input.search-input {
+  color: #1a252f !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+
+.search-popup .popup-btn-close {
+  cursor: pointer !important;
+}
+.search-popup .popup-btn-close:hover i {
+  color: #d9534f !important;
 }
 
 /* 4. 文章卡片悬浮浮起动效 */
