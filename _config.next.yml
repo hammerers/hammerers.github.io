@@ -26,7 +26,7 @@ menu:
   tags: /tags/ || fa fa-tags
   categories: /categories/ || fa fa-th
   archives: /archives/ || fa fa-archive
-  # about: /about/ || fa fa-user
+  search: /search/ || fa fa-search
 
 # Sidebar Settings
 sidebar:
@@ -55,9 +55,9 @@ codeblock:
     enable: true
     style: mac
 
-# Local Search
+# Local Search (设置为 false 以使用独立搜索页面)
 local_search:
-  enable: true
+  enable: false
   trigger: auto
   top_n_per_article: 1
   unescape: false

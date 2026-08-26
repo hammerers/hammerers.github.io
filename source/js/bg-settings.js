@@ -277,16 +277,83 @@
     }
   }
 
+  // 独立搜索页面引擎 (Search Page Engine)
+  function initSearchPage() {
+    const input = document.getElementById('search-page-input');
+    const statusElem = document.getElementById('search-page-status');
+    const resultsElem = document.getElementById('search-page-results');
+    if (!input || !resultsElem) return;
+
+    let searchData = [];
+    fetch('/search.json')
+      .then(res => res.json())
+      .then(data => {
+        searchData = data || [];
+        statusElem.textContent = `共索引 ${searchData.length} 篇内容，请输入关键词实时搜索`;
+      })
+      .catch(() => {
+        statusElem.textContent = '暂无可检索内容';
+      });
+
+    input.addEventListener('input', (e) => {
+      const keyword = e.target.value.trim().toLowerCase();
+      if (!keyword) {
+        statusElem.textContent = `共索引 ${searchData.length} 篇内容，请输入关键词实时搜索`;
+        resultsElem.innerHTML = '';
+        return;
+      }
+
+      const matched = searchData.filter(post => {
+        const title = (post.title || '').toLowerCase();
+        const content = (post.content || '').toLowerCase();
+        return title.includes(keyword) || content.includes(keyword);
+      });
+
+      if (matched.length === 0) {
+        statusElem.textContent = `未找到与 “${e.target.value}” 相关的文章`;
+        resultsElem.innerHTML = '';
+        return;
+      }
+
+      statusElem.textContent = `找到 ${matched.length} 条与 “${e.target.value}” 相关的内容：`;
+      const reg = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+
+      resultsElem.innerHTML = matched.map(post => {
+        const highlightedTitle = (post.title || '无标题').replace(reg, '<mark class="search-keyword">$1</mark>');
+        const rawContent = (post.content || '').replace(/<[^>]+>/g, '');
+        const matchIdx = rawContent.toLowerCase().indexOf(keyword);
+        let snippet = '';
+        if (matchIdx !== -1) {
+          const start = Math.max(0, matchIdx - 40);
+          const end = Math.min(rawContent.length, matchIdx + 80);
+          snippet = (start > 0 ? '...' : '') + rawContent.substring(start, end) + (end < rawContent.length ? '...' : '');
+          snippet = snippet.replace(reg, '<mark class="search-keyword">$1</mark>');
+        } else {
+          snippet = rawContent.substring(0, 100) + '...';
+        }
+
+        return `
+          <div class="search-result-item">
+            <a href="${post.url}" class="search-result-title">${highlightedTitle}</a>
+            <div class="search-result-snippet">${snippet}</div>
+          </div>
+        `;
+      }).join('');
+    });
+  }
+
   // 页面加载完成后立即执行
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       applyStyles();
       initDOM();
       initAvatarLink();
+      initSearchPage();
     });
   } else {
     applyStyles();
     initDOM();
     initAvatarLink();
+    initSearchPage();
   }
 })();
