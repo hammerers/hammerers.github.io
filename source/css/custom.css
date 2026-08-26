@@ -8,8 +8,11 @@ body {
 }
 
 /* 2. 头部导航、侧边栏、主体卡片、评论区、页脚半透明毛玻璃特效 */
+header.header,
+.header,
 .header-inner,
 .sidebar-inner,
+.main-inner,
 .main-inner .post-block,
 .main-inner .comments,
 .pagination,
@@ -24,15 +27,22 @@ body {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
-/* 3. 头部左上角卡片整体与菜单透明化（解决黑底白底问题） */
+/* 3. 头部左上角卡片整体与菜单透明化（解决实色白底/黑底遮挡背景问题） */
+header.header,
+.header,
 .header-inner {
   overflow: hidden !important;
 }
 
-/* 顶部标题栏设为透明，文字设为高对比度深色 */
-.site-brand-container {
+/* 顶部标题栏与导航菜单子容器彻底透明化 */
+.site-brand-container,
+.site-nav,
+.site-nav-right,
+.main-menu,
+.menu {
   background: transparent !important;
 }
+
 .site-title {
   color: #1a252f !important;
   font-weight: bold !important;
@@ -44,11 +54,7 @@ body {
   background: #1a252f !important;
 }
 
-/* 导航菜单容器与菜单项透明化 */
-.site-nav,
-.menu {
-  background: transparent !important;
-}
+/* 导航菜单项透明与悬停高亮 */
 .menu .menu-item {
   margin: 4px 6px !important;
 }
@@ -71,15 +77,42 @@ body {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* 5. 侧边栏头像与光环动画 */
-.site-author-image {
-  border: 2px solid rgba(255, 255, 255, 0.8) !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
-  transition: transform 0.6s ease, box-shadow 0.3s ease !important;
+/* 5. 侧边栏头像：精致小巧初始尺寸，Hover 时 3D 破圈放大并浮起遮挡上方 */
+aside.sidebar,
+.sidebar,
+.sidebar-inner,
+.sidebar-panel-container,
+.sidebar-panel,
+.sidebar-panel-active,
+.site-overview-wrap,
+.site-overview,
+.site-author {
+  overflow: visible !important;
+  clip-path: none !important;
 }
-.site-author-image:hover {
-  transform: scale(1.1) rotate(360deg) !important;
-  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.45) !important;
+
+.site-author-image {
+  width: 58px !important;
+  height: 58px !important;
+  max-width: 58px !important;
+  border-radius: 50% !important;
+  padding: 2px !important;
+  border: 2px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+  margin: 6px auto 10px !important;
+  position: relative !important;
+  z-index: 50 !important;
+  cursor: pointer !important;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* 鼠标 Hover 时：向上破圈浮起并显著放大，立体遮挡上方区域，绝无任何裁切 */
+.site-author-image:hover,
+.site-author:hover .site-author-image {
+  transform: scale(1.55) translateY(-20px) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 0 24px rgba(52, 152, 219, 0.7) !important;
+  border-color: #3498db !important;
+  z-index: 99999 !important;
 }
 
 /* 6. 文章标题样式与链接交互 */

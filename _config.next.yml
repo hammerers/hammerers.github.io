@@ -24,7 +24,7 @@ custom_file_path:
 menu:
   home: / || fa fa-home
   tags: /tags/ || fa fa-tags
-  categories: /categories/ || fa fa-categories
+  categories: /categories/ || fa fa-th
   archives: /archives/ || fa fa-archive
   # about: /about/ || fa fa-user
 
@@ -37,9 +37,9 @@ sidebar:
 
 # Avatar
 avatar:
-  url: /images/avatar.jpg
+  url: https://github.com/hammerers.png
   rounded: true
-  rotated: true
+  rotated: false
 
 # Social Links
 social:

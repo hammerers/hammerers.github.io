@@ -3,7 +3,7 @@
 
   // 默认配置项
   const DEFAULT_SETTINGS = {
-    image: '/images/background.jpg',
+    image: '/images/background.gif',
     mode: 'cover',        // 'cover' | 'contain' | 'repeat'
     mask: 0,              // 0% ~ 90%
     scale: 100,           // 50% ~ 200%
@@ -12,16 +12,15 @@
     blur: 0               // 0px ~ 40px
   };
 
-  // 读取已保存的设置
+  // 读取已保存的设置 (滑块与模式记忆持久化，图片路径以当前 DEFAULT_SETTINGS.image 配置为主)
   function loadSettings() {
     try {
       const saved = localStorage.getItem('hexo_bg_settings');
       if (saved) {
-        return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        return Object.assign({}, DEFAULT_SETTINGS, parsed, { image: DEFAULT_SETTINGS.image });
       }
-    } catch (e) {
-      console.warn('Failed to load bg settings:', e);
-    }
+    } catch (e) {}
     return Object.assign({}, DEFAULT_SETTINGS);
   }
 
@@ -41,7 +40,7 @@
     root.style.setProperty('--bg-mask-opacity', (settings.mask / 100).toString());
     root.style.setProperty('--bg-scale', (settings.scale / 100).toString());
     
-    // 纵向与横向平移变换：直接映射平移坐标，保证任何屏幕分辨率下都能平滑拖拽画面
+    // 纵向与横向平移变换：直接映射平移坐标，在任何屏幕分辨率下都能平滑拖拽画面
     const transX = ((settings.posX - 50) * 0.5).toFixed(2); // -25vw ~ +25vw
     const transY = ((settings.posY - 50) * 0.5).toFixed(2); // -25vh ~ +25vh
     root.style.setProperty('--bg-trans-x', `${transX}vw`);
@@ -74,95 +73,78 @@
       document.body.prepend(bgMask);
     }
 
-    // 2. 注入悬浮设置齿轮按钮
-    const toggleBtn = document.createElement('div');
-    toggleBtn.id = 'bg-setting-toggle';
-    toggleBtn.title = '背景与外观设置';
-    toggleBtn.innerHTML = '<i class="fa fa-cog"></i>';
-    document.body.appendChild(toggleBtn);
-
-    // 3. 注入设置模态面板
-    const panel = document.createElement('div');
-    panel.id = 'bg-setting-panel';
-    panel.innerHTML = `
-      <div class="bg-panel-header">
-        <h3>应用设置</h3>
-        <button class="bg-panel-close" id="bg-close-btn">&times;</button>
+    // 2. 注入圆形转盘容器 (Hover 感应区 + 中心齿轮 + 顺时针旋转转盘)
+    const dialContainer = document.createElement('div');
+    dialContainer.id = 'bg-dial-container';
+    dialContainer.innerHTML = `
+      <!-- 中心齿轮按钮 (内圆核心，贴齐左下角 0,0) -->
+      <div id="bg-dial-trigger" title="背景外观设置">
+        <i class="fa fa-cog"></i>
       </div>
 
-      <!-- 模式切换: 填充 / 完整 / 平铺 -->
-      <div class="bg-panel-modes">
-        <button class="bg-mode-btn ${settings.mode === 'cover' ? 'active' : ''}" data-mode="cover">填充</button>
-        <button class="bg-mode-btn ${settings.mode === 'contain' ? 'active' : ''}" data-mode="contain">完整</button>
-        <button class="bg-mode-btn ${settings.mode === 'repeat' ? 'active' : ''}" data-mode="repeat">平铺</button>
-      </div>
+      <!-- 顺时针弹出 / 逆时针收回 纯射线罗盘扇盘 -->
+      <div id="bg-dial-wheel">
+        <!-- 最外环圆弧快捷按钮 (紧贴最外环空白弧线) -->
+        <div class="dial-arc-item dial-arc-reset">
+          <button class="dial-arc-btn dial-arc-reset-btn" id="dial-reset-btn" title="恢复默认设置">重置</button>
+        </div>
+        <div class="dial-arc-item dial-arc-cover">
+          <button class="dial-arc-btn ${settings.mode === 'cover' ? 'active' : ''}" data-mode="cover">填充</button>
+        </div>
+        <div class="dial-arc-item dial-arc-contain">
+          <button class="dial-arc-btn ${settings.mode === 'contain' ? 'active' : ''}" data-mode="contain">完整</button>
+        </div>
+        <div class="dial-arc-item dial-arc-repeat">
+          <button class="dial-arc-btn ${settings.mode === 'repeat' ? 'active' : ''}" data-mode="repeat">平铺</button>
+        </div>
 
-      <!-- 遮罩滑块 -->
-      <div class="bg-slider-row">
-        <span class="bg-slider-label">遮罩</span>
-        <input type="range" class="bg-slider-track" id="slider-mask" min="0" max="90" value="${settings.mask}">
-        <span class="bg-slider-value" id="val-mask">${settings.mask}%</span>
-      </div>
+        <!-- 5 根放射线滑块 (射线连接内圆与外圆环) -->
+        <!-- 射线 1: 遮罩 (72°) -->
+        <div class="dial-ray dial-ray-mask">
+          <span class="dial-ray-label">遮罩</span>
+          <input type="range" class="dial-ray-track" id="dial-mask" min="0" max="90" value="${settings.mask}">
+          <span class="dial-ray-val" id="dial-val-mask">${settings.mask}%</span>
+        </div>
 
-      <!-- 缩放滑块 -->
-      <div class="bg-slider-row">
-        <span class="bg-slider-label">缩放</span>
-        <input type="range" class="bg-slider-track" id="slider-scale" min="50" max="200" value="${settings.scale}">
-        <span class="bg-slider-value" id="val-scale">${settings.scale}%</span>
-      </div>
+        <!-- 射线 2: 缩放 (57°) -->
+        <div class="dial-ray dial-ray-scale">
+          <span class="dial-ray-label">缩放</span>
+          <input type="range" class="dial-ray-track" id="dial-scale" min="50" max="200" value="${settings.scale}">
+          <span class="dial-ray-val" id="dial-val-scale">${settings.scale}%</span>
+        </div>
 
-      <!-- 横向滑块 -->
-      <div class="bg-slider-row">
-        <span class="bg-slider-label">横向</span>
-        <input type="range" class="bg-slider-track" id="slider-pos-x" min="0" max="100" value="${settings.posX}">
-        <span class="bg-slider-value" id="val-pos-x">${settings.posX}%</span>
-      </div>
+        <!-- 射线 3: 横向 (42°) -->
+        <div class="dial-ray dial-ray-posx">
+          <span class="dial-ray-label">横向</span>
+          <input type="range" class="dial-ray-track" id="dial-pos-x" min="0" max="100" value="${settings.posX}">
+          <span class="dial-ray-val" id="dial-val-pos-x">${settings.posX}%</span>
+        </div>
 
-      <!-- 纵向滑块 -->
-      <div class="bg-slider-row">
-        <span class="bg-slider-label">纵向</span>
-        <input type="range" class="bg-slider-track" id="slider-pos-y" min="0" max="100" value="${settings.posY}">
-        <span class="bg-slider-value" id="val-pos-y">${settings.posY}%</span>
-      </div>
+        <!-- 射线 4: 纵向 (27°) -->
+        <div class="dial-ray dial-ray-posy">
+          <span class="dial-ray-label">纵向</span>
+          <input type="range" class="dial-ray-track" id="dial-pos-y" min="0" max="100" value="${settings.posY}">
+          <span class="dial-ray-val" id="dial-val-pos-y">${settings.posY}%</span>
+        </div>
 
-      <!-- 模糊滑块 -->
-      <div class="bg-slider-row">
-        <span class="bg-slider-label">模糊</span>
-        <input type="range" class="bg-slider-track" id="slider-blur" min="0" max="40" value="${settings.blur}">
-        <span class="bg-slider-value" id="val-blur">${settings.blur}px</span>
-      </div>
-
-      <!-- 底部恢复默认 -->
-      <div class="bg-panel-footer">
-        <button class="bg-reset-btn" id="bg-reset-btn">恢复默认</button>
+        <!-- 射线 5: 模糊 (12°) -->
+        <div class="dial-ray dial-ray-blur">
+          <span class="dial-ray-label">模糊</span>
+          <input type="range" class="dial-ray-track" id="dial-blur" min="0" max="40" value="${settings.blur}">
+          <span class="dial-ray-val" id="dial-val-blur">${settings.blur}px</span>
+        </div>
       </div>
     `;
-    document.body.appendChild(panel);
+    document.body.appendChild(dialContainer);
 
-    // 事件绑定
-    bindEvents(toggleBtn, panel);
+    bindEvents(dialContainer);
   }
 
-  function bindEvents(toggleBtn, panel) {
-    // 切换面板显隐
-    toggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      panel.classList.toggle('active');
-    });
-
-    document.getElementById('bg-close-btn').addEventListener('click', () => {
-      panel.classList.remove('active');
-    });
-
-    // 点击外部区域关闭面板
-    document.addEventListener('click', (e) => {
-      if (!panel.contains(e.target) && e.target !== toggleBtn) {
-        panel.classList.remove('active');
-      }
-    });
+  function bindEvents(container) {
+    const wheel = document.getElementById('bg-dial-wheel');
 
     // 模式切换按钮
-    const modeBtns = panel.querySelectorAll('.bg-mode-btn');
+    const modeBtns = wheel.querySelectorAll('.dial-arc-btn:not(.dial-arc-reset-btn)');
     modeBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         modeBtns.forEach(b => b.classList.remove('active'));
@@ -173,7 +155,7 @@
       });
     });
 
-    // 绑定滑块更新
+    // 绑定滑块
     function bindSlider(id, key, unit, valElemId) {
       const slider = document.getElementById(id);
       const valElem = document.getElementById(valElemId);
@@ -186,29 +168,28 @@
       });
     }
 
-    bindSlider('slider-mask', 'mask', '%', 'val-mask');
-    bindSlider('slider-scale', 'scale', '%', 'val-scale');
-    bindSlider('slider-pos-x', 'posX', '%', 'val-pos-x');
-    bindSlider('slider-pos-y', 'posY', '%', 'val-pos-y');
-    bindSlider('slider-blur', 'blur', 'px', 'val-blur');
+    bindSlider('dial-mask', 'mask', '%', 'dial-val-mask');
+    bindSlider('dial-scale', 'scale', '%', 'dial-val-scale');
+    bindSlider('dial-pos-x', 'posX', '%', 'dial-val-pos-x');
+    bindSlider('dial-pos-y', 'posY', '%', 'dial-val-pos-y');
+    bindSlider('dial-blur', 'blur', 'px', 'dial-val-blur');
 
-    // 恢复默认按钮
-    document.getElementById('bg-reset-btn').addEventListener('click', () => {
+    // 重置按钮
+    document.getElementById('dial-reset-btn').addEventListener('click', () => {
       settings = Object.assign({}, DEFAULT_SETTINGS);
       saveSettings(settings);
       applyStyles();
 
-      // 同步 UI 状态
-      document.getElementById('slider-mask').value = settings.mask;
-      document.getElementById('val-mask').textContent = settings.mask + '%';
-      document.getElementById('slider-scale').value = settings.scale;
-      document.getElementById('val-scale').textContent = settings.scale + '%';
-      document.getElementById('slider-pos-x').value = settings.posX;
-      document.getElementById('val-pos-x').textContent = settings.posX + '%';
-      document.getElementById('slider-pos-y').value = settings.posY;
-      document.getElementById('val-pos-y').textContent = settings.posY + '%';
-      document.getElementById('slider-blur').value = settings.blur;
-      document.getElementById('val-blur').textContent = settings.blur + 'px';
+      document.getElementById('dial-mask').value = settings.mask;
+      document.getElementById('dial-val-mask').textContent = settings.mask + '%';
+      document.getElementById('dial-scale').value = settings.scale;
+      document.getElementById('dial-val-scale').textContent = settings.scale + '%';
+      document.getElementById('dial-pos-x').value = settings.posX;
+      document.getElementById('dial-val-pos-x').textContent = settings.posX + '%';
+      document.getElementById('dial-pos-y').value = settings.posY;
+      document.getElementById('dial-val-pos-y').textContent = settings.posY + '%';
+      document.getElementById('dial-blur').value = settings.blur;
+      document.getElementById('dial-val-blur').textContent = settings.blur + 'px';
 
       modeBtns.forEach(b => {
         b.classList.toggle('active', b.dataset.mode === settings.mode);
