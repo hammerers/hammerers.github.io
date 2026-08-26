@@ -69,19 +69,20 @@
       document.body.appendChild(bgMask);
     }
 
-    // 2. 注入顶部导航栏最右侧的设置按钮
+    // 2. 注入顶部导航栏菜单项中的设置按钮
     function injectTopNavButton() {
       if (document.getElementById('top-nav-settings-btn')) return;
-      const navContainer = document.querySelector('.site-nav') || document.querySelector('header.header');
-      if (navContainer) {
-        const btn = document.createElement('button');
-        btn.id = 'top-nav-settings-btn';
-        btn.className = 'top-nav-settings-btn';
-        btn.title = '打开背景与视觉设置';
-        btn.innerHTML = '<i class="fa fa-cog"></i> <span>设置</span>';
-        navContainer.appendChild(btn);
+      const menu = document.querySelector('ul.main-menu.menu') || document.querySelector('.site-nav');
+      if (menu) {
+        const li = document.createElement('li');
+        li.className = 'menu-item menu-item-settings';
+        li.innerHTML = '<a href="javascript:void(0);" id="top-nav-settings-btn" rel="section"><i class="fa fa-cog fa-fw"></i> 设置</a>';
+        menu.appendChild(li);
 
-        btn.addEventListener('click', toggleDrawer);
+        li.querySelector('#top-nav-settings-btn').addEventListener('click', (e) => {
+          e.preventDefault();
+          toggleDrawer();
+        });
       }
     }
 
