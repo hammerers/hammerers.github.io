@@ -117,32 +117,43 @@ header.header {
   transform: translateY(-1px) !important;
 }
 
-/* 页面内容避让顶部 60px 导航栏 & 底部页脚贴底 (Sticky Footer) */
+/* 页面主容器避让顶部 60px 导航栏 & 底部页脚贴底 (Sticky Footer) */
 body {
   min-height: 100vh !important;
   display: flex !important;
   flex-direction: column !important;
 }
 
-.container {
+main.main,
+.main {
   flex: 1 0 auto !important;
   display: flex !important;
-  flex-direction: column !important;
   padding-top: 80px !important;
+  min-height: calc(100vh - 160px) !important;
+  box-sizing: border-box !important;
+}
+
+.column {
+  margin-top: 0 !important;
 }
 
 .main-inner {
-  flex: 1 0 auto !important;
-  min-height: calc(100vh - 220px) !important;
+  margin-top: 0 !important;
+}
+
+aside.sidebar,
+.sidebar {
+  top: 80px !important;
+  margin-top: 0 !important;
+}
+
+.sidebar-inner {
+  margin-top: 0 !important;
 }
 
 footer.footer {
   margin-top: auto !important;
   width: 100% !important;
-}
-
-.sidebar {
-  top: 80px !important;
 }
 
 /* 搜索浮层与弹窗美化 (高层级与毛玻璃) */
