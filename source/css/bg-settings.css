@@ -1,0 +1,228 @@
+/* ================================================================
+   背景动态调节与设置面板样式 (Aesthetic Settings Panel)
+   ================================================================ */
+
+:root {
+  --bg-image: url("/images/background.jpg");
+  --bg-mask-opacity: 0;
+  --bg-scale: 1;
+  --bg-trans-x: 0vw;
+  --bg-trans-y: 0vh;
+  --bg-blur: 0px;
+  --bg-repeat: no-repeat;
+  --bg-size: cover;
+}
+
+/* 1. 独立全屏背景图层 (支持全向任意偏移与缩放) */
+#custom-bg-layer {
+  position: fixed;
+  top: -25vh;
+  left: -25vw;
+  width: 150vw;
+  height: 150vh;
+  z-index: -999;
+  background-image: var(--bg-image);
+  background-position: center center;
+  background-repeat: var(--bg-repeat);
+  background-size: var(--bg-size);
+  filter: blur(var(--bg-blur));
+  transform: translate(var(--bg-trans-x), var(--bg-trans-y)) scale(var(--bg-scale));
+  transform-origin: center center;
+  pointer-events: none;
+  transition: filter 0.15s ease;
+}
+
+/* 2. 独立背景遮罩图层 */
+#custom-bg-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -998;
+  background-color: rgba(0, 0, 0, var(--bg-mask-opacity));
+  pointer-events: none;
+  transition: background-color 0.15s ease;
+}
+
+/* 3. 悬浮设置按钮 (⚙️) */
+#bg-setting-toggle {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(30, 30, 30, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#bg-setting-toggle:hover {
+  background: rgba(46, 204, 113, 0.85);
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.5);
+}
+
+/* 4. 设置面板模态窗口 (深色极简卡片，纯粹滑块控制器) */
+#bg-setting-panel {
+  position: fixed;
+  top: 70px;
+  left: 30px;
+  width: 310px;
+  background: rgba(24, 24, 28, 0.94);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  z-index: 10001;
+  padding: 18px 20px;
+  box-sizing: border-box;
+  display: none;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.96);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  user-select: none;
+}
+
+#bg-setting-panel.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* 顶部标题栏 */
+.bg-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bg-panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+.bg-panel-close {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.bg-panel-close:hover {
+  color: #ff5e57;
+}
+
+/* 填充模式切换按钮组 (填充 | 完整 | 平铺) */
+.bg-panel-modes {
+  display: flex;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 8px;
+  padding: 3px;
+  margin-bottom: 16px;
+  gap: 3px;
+}
+.bg-mode-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 13px;
+  padding: 6px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+.bg-mode-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #2ecc71;
+  font-weight: 500;
+}
+
+/* 滑块行 (Label - Slider - Value) */
+.bg-slider-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.bg-slider-label {
+  width: 44px;
+  color: #bbb;
+}
+.bg-slider-track {
+  flex: 1;
+  margin: 0 10px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+}
+.bg-slider-track::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #2ecc71;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(46, 204, 113, 0.6);
+  transition: transform 0.1s;
+}
+.bg-slider-track::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+.bg-slider-value {
+  width: 48px;
+  text-align: right;
+  color: #ddd;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 底部操作行 (恢复默认) */
+.bg-panel-footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.bg-reset-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #888;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.bg-reset-btn:hover {
+  color: #ff5e57;
+  border-color: rgba(255, 94, 87, 0.4);
+}

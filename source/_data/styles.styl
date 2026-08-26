@@ -1,0 +1,96 @@
+// ================================================================
+// NexT 自定义样式增强 (Glassmorphism 毛玻璃 + 悬浮动效 + 现代卡片设计)
+// ================================================================
+
+// 1. 全局背景：使用用户上传的 /images/background.png，并提供渐变作为兜底
+body {
+  background: url("/images/background.png") no-repeat fixed center !important;
+  background-size: cover !important;
+}
+
+// 2. 头部导航、侧边栏、主体卡片半透明毛玻璃特效
+.header-inner,
+.sidebar-inner,
+.main-inner .post-block,
+.main-inner .comments,
+.pagination,
+.sub-menu {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(10px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+// 3. 文章卡片悬浮浮起动效
+.main-inner .post-block:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+// 4. 侧边栏头像悬浮光环
+.site-author-image {
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transition: transform 0.6s ease, box-shadow 0.3s ease !important;
+}
+.site-author-image:hover {
+  transform: scale(1.1) rotate(360deg) !important;
+  box-shadow: 0 6px 18px rgba(74, 144, 226, 0.4) !important;
+}
+
+// 5. 文章标题样式与链接交互
+.posts-expand .post-title-link {
+  color: #2c3e50 !important;
+  transition: color 0.2s ease-in-out !important;
+}
+.posts-expand .post-title-link:hover {
+  color: #3498db !important;
+}
+
+// 6. 标签与分类胶囊样式
+.posts-expand .post-tags a {
+  background: rgba(52, 152, 219, 0.12) !important;
+  color: #3498db !important;
+  padding: 3px 10px !important;
+  border-radius: 15px !important;
+  border-bottom: none !important;
+  transition: all 0.2s ease !important;
+}
+.posts-expand .post-tags a:hover {
+  background: #3498db !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+}
+
+// 7. 代码块圆角与阴影
+.highlight-wrap, .highlight {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+}
+
+// 8. 引用块 (Blockquote) 雅致高亮条
+blockquote {
+  border-left: 4px solid #3498db !important;
+  background-color: rgba(52, 152, 219, 0.08) !important;
+  border-radius: 0 8px 8px 0 !important;
+  padding: 10px 18px !important;
+  margin: 1.2em 0 !important;
+}
+
+// 9. 现代极简平滑滚动条
+::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border-radius: 8px !important;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4) !important;
+}
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}

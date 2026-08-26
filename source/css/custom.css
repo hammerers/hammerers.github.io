@@ -1,0 +1,138 @@
+/* ================================================================
+   NexT 自定义美化样式 (Glassmorphism 毛玻璃 + 悬浮动效 + 现代卡片设计)
+   ================================================================ */
+
+/* 1. 全局背景：由 #custom-bg-layer 独立图层统一驱动（支持动态缩放、模糊、遮罩与平铺） */
+body {
+  background: transparent !important;
+}
+
+/* 2. 头部导航、侧边栏、主体卡片、评论区、页脚半透明毛玻璃特效 */
+.header-inner,
+.sidebar-inner,
+.main-inner .post-block,
+.main-inner .comments,
+.pagination,
+.sub-menu,
+.footer-inner {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(12px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* 3. 头部左上角卡片整体与菜单透明化（解决黑底白底问题） */
+.header-inner {
+  overflow: hidden !important;
+}
+
+/* 顶部标题栏设为透明，文字设为高对比度深色 */
+.site-brand-container {
+  background: transparent !important;
+}
+.site-title {
+  color: #1a252f !important;
+  font-weight: bold !important;
+}
+.site-subtitle {
+  color: #34495e !important;
+}
+.site-meta .logo-line {
+  background: #1a252f !important;
+}
+
+/* 导航菜单容器与菜单项透明化 */
+.site-nav,
+.menu {
+  background: transparent !important;
+}
+.menu .menu-item {
+  margin: 4px 6px !important;
+}
+.menu .menu-item a {
+  background: transparent !important;
+  color: #2c3e50 !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+.menu .menu-item a:hover,
+.menu .menu-item-active a {
+  background: rgba(52, 152, 219, 0.25) !important;
+  color: #2980b9 !important;
+}
+
+/* 4. 文章卡片悬浮浮起动效 */
+.main-inner .post-block:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 5. 侧边栏头像与光环动画 */
+.site-author-image {
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+  transition: transform 0.6s ease, box-shadow 0.3s ease !important;
+}
+.site-author-image:hover {
+  transform: scale(1.1) rotate(360deg) !important;
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.45) !important;
+}
+
+/* 6. 文章标题样式与链接交互 */
+.posts-expand .post-title-link {
+  color: #2c3e50 !important;
+  transition: color 0.2s ease-in-out !important;
+}
+.posts-expand .post-title-link:hover {
+  color: #3498db !important;
+}
+
+/* 7. 标签与分类胶囊样式 */
+.posts-expand .post-tags a {
+  background: rgba(52, 152, 219, 0.12) !important;
+  color: #3498db !important;
+  padding: 3px 10px !important;
+  border-radius: 15px !important;
+  border-bottom: none !important;
+  transition: all 0.2s ease !important;
+}
+.posts-expand .post-tags a:hover {
+  background: #3498db !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+}
+
+/* 8. 代码块圆角与阴影 */
+.highlight-wrap, .highlight, pre {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 9. 引用块 (Blockquote) 雅致高亮条 */
+blockquote {
+  border-left: 4px solid #3498db !important;
+  background-color: rgba(52, 152, 219, 0.08) !important;
+  border-radius: 0 8px 8px 0 !important;
+  padding: 10px 18px !important;
+  margin: 1.2em 0 !important;
+}
+
+/* 10. 现代极简平滑滚动条 */
+::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border-radius: 8px !important;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4) !important;
+}
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}

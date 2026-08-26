@@ -1,0 +1,97 @@
+# ---------------------------------------------------------------
+# NexT Theme Custom Configuration
+# ---------------------------------------------------------------
+
+# Schemes: Muse | Mist | Pisces | Gemini
+scheme: Gemini
+
+# Dark Mode
+darkmode: false
+
+# Favicon
+favicon:
+  small: /images/favicon-16x16-next.png
+  medium: /images/favicon-32x32-next.png
+  apple_touch_icon: /images/apple-touch-icon-next.png
+  safari_pinned_tab: /images/logo.svg
+
+# Custom Styles & Head Injection
+custom_file_path:
+  head: source/_data/head.njk
+  style: source/_data/styles.styl
+
+# Menu Settings
+menu:
+  home: / || fa fa-home
+  tags: /tags/ || fa fa-tags
+  categories: /categories/ || fa fa-categories
+  archives: /archives/ || fa fa-archive
+  # about: /about/ || fa fa-user
+
+# Sidebar Settings
+sidebar:
+  position: left
+  width: 300
+  padding: 18
+  offset: 12
+
+# Avatar
+avatar:
+  url: /images/avatar.jpg
+  rounded: true
+  rotated: true
+
+# Social Links
+social:
+  GitHub: https://github.com/hammerers || fab fa-github
+  # E-Mail: mailto:your_email@example.com || fa fa-envelope
+
+# Codeblock Settings
+codeblock:
+  theme:
+    light: default
+    dark: github-dark
+  copy_button:
+    enable: true
+    style: mac
+
+# Local Search
+local_search:
+  enable: true
+  trigger: auto
+  top_n_per_article: 1
+  unescape: false
+  preload: false
+
+# Reading progress & Pace
+pace:
+  enable: true
+  theme: minimal
+
+# Back to top
+back2top:
+  enable: true
+  sidebar: false
+  scrollpercent: true
+
+# Math formula support
+math:
+  mathjax:
+    enable: true
+    tags: none
+
+# Table of contents
+toc:
+  enable: true
+  number: true
+  wrap: false
+  expand_all: true
+  max_depth: 3
+
+# Footer
+footer:
+  since: 2026
+  icon:
+    name: fa fa-heart
+    animated: true
+    color: "#ff6b81"
