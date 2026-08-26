@@ -197,14 +197,32 @@
     });
   }
 
+  // 绑定头像点击跳转 GitHub 个人主页
+  function initAvatarLink() {
+    const avatar = document.querySelector('.site-author-image');
+    if (avatar && !avatar.closest('a')) {
+      const link = document.createElement('a');
+      link.href = 'https://github.com/hammerers';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.title = '访问 Hammerer 的 GitHub 主页';
+      link.style.display = 'inline-block';
+      link.style.borderBottom = 'none';
+      avatar.parentNode.insertBefore(link, avatar);
+      link.appendChild(avatar);
+    }
+  }
+
   // 页面加载完成后立即执行
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       applyStyles();
       initDOM();
+      initAvatarLink();
     });
   } else {
     applyStyles();
     initDOM();
+    initAvatarLink();
   }
 })();
