@@ -128,12 +128,12 @@ body {
   flex: 1 0 auto !important;
   display: flex !important;
   flex-direction: column !important;
-  padding-top: 40px !important;
+  padding-top: 80px !important;
 }
 
 .main-inner {
   flex: 1 0 auto !important;
-  min-height: calc(100vh - 180px) !important;
+  min-height: calc(100vh - 220px) !important;
 }
 
 footer.footer {
@@ -142,7 +142,7 @@ footer.footer {
 }
 
 .sidebar {
-  top: 75px !important;
+  top: 80px !important;
 }
 
 /* 搜索浮层与弹窗美化 (高层级与毛玻璃) */
