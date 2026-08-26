@@ -39,162 +39,230 @@
     root.style.setProperty('--bg-image', `url("${settings.image}")`);
     root.style.setProperty('--bg-mask-opacity', (settings.mask / 100).toString());
     root.style.setProperty('--bg-scale', (settings.scale / 100).toString());
-    
-    // 纵向与横向平移变换：直接映射平移坐标，在任何屏幕分辨率下都能平滑拖拽画面
-    const transX = ((settings.posX - 50) * 0.5).toFixed(2); // -25vw ~ +25vw
-    const transY = ((settings.posY - 50) * 0.5).toFixed(2); // -25vh ~ +25vh
-    root.style.setProperty('--bg-trans-x', `${transX}vw`);
-    root.style.setProperty('--bg-trans-y', `${transY}vh`);
+    root.style.setProperty('--bg-trans-x', `${(settings.posX - 50) * 0.5}vw`);
+    root.style.setProperty('--bg-trans-y', `${(settings.posY - 50) * 0.5}vh`);
     root.style.setProperty('--bg-blur', `${settings.blur}px`);
 
-    if (settings.mode === 'contain') {
-      root.style.setProperty('--bg-size', 'contain');
-      root.style.setProperty('--bg-repeat', 'no-repeat');
-    } else if (settings.mode === 'repeat') {
-      root.style.setProperty('--bg-size', 'auto');
+    if (settings.mode === 'repeat') {
       root.style.setProperty('--bg-repeat', 'repeat');
-    } else {
-      root.style.setProperty('--bg-size', 'cover');
+      root.style.setProperty('--bg-size', 'auto');
+    } else if (settings.mode === 'contain') {
       root.style.setProperty('--bg-repeat', 'no-repeat');
+      root.style.setProperty('--bg-size', 'contain');
+    } else {
+      root.style.setProperty('--bg-repeat', 'no-repeat');
+      root.style.setProperty('--bg-size', 'cover');
     }
   }
 
   // 初始化 DOM 结构
   function initDOM() {
-    // 1. 注入背景图层与遮罩图层
+    // 1. 注入全屏背景层和遮罩层
     if (!document.getElementById('custom-bg-layer')) {
       const bgLayer = document.createElement('div');
       bgLayer.id = 'custom-bg-layer';
-      document.body.prepend(bgLayer);
+      document.body.appendChild(bgLayer);
     }
     if (!document.getElementById('custom-bg-mask')) {
       const bgMask = document.createElement('div');
       bgMask.id = 'custom-bg-mask';
-      document.body.prepend(bgMask);
+      document.body.appendChild(bgMask);
     }
 
-    // 2. 注入圆形转盘容器 (Hover 感应区 + 中心齿轮 + 顺时针旋转转盘)
-    const dialContainer = document.createElement('div');
-    dialContainer.id = 'bg-dial-container';
-    dialContainer.innerHTML = `
-      <!-- 中心齿轮按钮 (内圆核心，贴齐左下角 0,0) -->
-      <div id="bg-dial-trigger" title="背景外观设置">
-        <i class="fa fa-cog"></i>
-      </div>
+    // 2. 注入顶部导航栏最右侧的设置按钮
+    function injectTopNavButton() {
+      if (document.getElementById('top-nav-settings-btn')) return;
+      const navContainer = document.querySelector('.site-nav') || document.querySelector('header.header');
+      if (navContainer) {
+        const btn = document.createElement('button');
+        btn.id = 'top-nav-settings-btn';
+        btn.className = 'top-nav-settings-btn';
+        btn.title = '打开背景与视觉设置';
+        btn.innerHTML = '<i class="fa fa-cog"></i> <span>设置</span>';
+        navContainer.appendChild(btn);
 
-      <!-- 顺时针弹出 / 逆时针收回 纯射线罗盘扇盘 -->
-      <div id="bg-dial-wheel">
-        <!-- 最外环圆弧快捷按钮 (紧贴最外环空白弧线) -->
-        <div class="dial-arc-item dial-arc-reset">
-          <button class="dial-arc-btn dial-arc-reset-btn" id="dial-reset-btn" title="恢复默认设置">重置</button>
-        </div>
-        <div class="dial-arc-item dial-arc-cover">
-          <button class="dial-arc-btn ${settings.mode === 'cover' ? 'active' : ''}" data-mode="cover">填充</button>
-        </div>
-        <div class="dial-arc-item dial-arc-contain">
-          <button class="dial-arc-btn ${settings.mode === 'contain' ? 'active' : ''}" data-mode="contain">完整</button>
-        </div>
-        <div class="dial-arc-item dial-arc-repeat">
-          <button class="dial-arc-btn ${settings.mode === 'repeat' ? 'active' : ''}" data-mode="repeat">平铺</button>
-        </div>
+        btn.addEventListener('click', toggleDrawer);
+      }
+    }
 
-        <!-- 5 根放射线滑块 (射线连接内圆与外圆环) -->
-        <!-- 射线 1: 遮罩 (72°) -->
-        <div class="dial-ray dial-ray-mask">
-          <span class="dial-ray-label">遮罩</span>
-          <input type="range" class="dial-ray-track" id="dial-mask" min="0" max="90" value="${settings.mask}">
-          <span class="dial-ray-val" id="dial-val-mask">${settings.mask}%</span>
+    // 3. 注入右侧垂直长条抽屉与遮罩
+    if (!document.getElementById('bg-settings-drawer')) {
+      const backdrop = document.createElement('div');
+      backdrop.id = 'bg-settings-backdrop';
+      document.body.appendChild(backdrop);
+
+      const drawer = document.createElement('div');
+      drawer.id = 'bg-settings-drawer';
+      drawer.innerHTML = `
+        <div class="drawer-header">
+          <div class="drawer-title"><i class="fa fa-sliders-h"></i> 视觉与背景设置</div>
+          <button id="drawer-close-btn" class="drawer-close-btn" title="关闭面板">✕</button>
         </div>
 
-        <!-- 射线 2: 缩放 (57°) -->
-        <div class="dial-ray dial-ray-scale">
-          <span class="dial-ray-label">缩放</span>
-          <input type="range" class="dial-ray-track" id="dial-scale" min="50" max="200" value="${settings.scale}">
-          <span class="dial-ray-val" id="dial-val-scale">${settings.scale}%</span>
+        <div class="drawer-content">
+          <!-- 填充模式分段选择器 -->
+          <div class="drawer-section">
+            <label class="drawer-section-title">背景显示模式</label>
+            <div class="drawer-mode-group">
+              <button class="drawer-mode-btn ${settings.mode === 'cover' ? 'active' : ''}" data-mode="cover">
+                <i class="fa fa-expand"></i> 完整填充
+              </button>
+              <button class="drawer-mode-btn ${settings.mode === 'contain' ? 'active' : ''}" data-mode="contain">
+                <i class="fa fa-compress"></i> 完整包含
+              </button>
+              <button class="drawer-mode-btn ${settings.mode === 'repeat' ? 'active' : ''}" data-mode="repeat">
+                <i class="fa fa-th"></i> 图案平铺
+              </button>
+            </div>
+          </div>
+
+          <!-- 5 项调节滑块 -->
+          <div class="drawer-section">
+            <label class="drawer-section-title">参数精细调节</label>
+            
+            <div class="drawer-slider-row">
+              <div class="slider-info">
+                <span class="slider-name"><i class="fa fa-adjust"></i> 遮罩深度</span>
+                <span class="slider-value" id="val-mask">${settings.mask}%</span>
+              </div>
+              <input type="range" id="input-mask" class="drawer-slider" min="0" max="90" value="${settings.mask}">
+            </div>
+
+            <div class="drawer-slider-row">
+              <div class="slider-info">
+                <span class="slider-name"><i class="fa fa-search-plus"></i> 缩放比例</span>
+                <span class="slider-value" id="val-scale">${settings.scale}%</span>
+              </div>
+              <input type="range" id="input-scale" class="drawer-slider" min="50" max="200" value="${settings.scale}">
+            </div>
+
+            <div class="drawer-slider-row">
+              <div class="slider-info">
+                <span class="slider-name"><i class="fa fa-arrows-alt-h"></i> 横向位置</span>
+                <span class="slider-value" id="val-pos-x">${settings.posX}%</span>
+              </div>
+              <input type="range" id="input-pos-x" class="drawer-slider" min="0" max="100" value="${settings.posX}">
+            </div>
+
+            <div class="drawer-slider-row">
+              <div class="slider-info">
+                <span class="slider-name"><i class="fa fa-arrows-alt-v"></i> 纵向位置</span>
+                <span class="slider-value" id="val-pos-y">${settings.posY}%</span>
+              </div>
+              <input type="range" id="input-pos-y" class="drawer-slider" min="0" max="100" value="${settings.posY}">
+            </div>
+
+            <div class="drawer-slider-row">
+              <div class="slider-info">
+                <span class="slider-name"><i class="fa fa-tint"></i> 高斯模糊</span>
+                <span class="slider-value" id="val-blur">${settings.blur}px</span>
+              </div>
+              <input type="range" id="input-blur" class="drawer-slider" min="0" max="40" value="${settings.blur}">
+            </div>
+          </div>
         </div>
 
-        <!-- 射线 3: 横向 (42°) -->
-        <div class="dial-ray dial-ray-posx">
-          <span class="dial-ray-label">横向</span>
-          <input type="range" class="dial-ray-track" id="dial-pos-x" min="0" max="100" value="${settings.posX}">
-          <span class="dial-ray-val" id="dial-val-pos-x">${settings.posX}%</span>
+        <!-- 底部重置 -->
+        <div class="drawer-footer">
+          <button id="drawer-reset-btn" class="drawer-reset-btn">
+            <i class="fa fa-redo-alt"></i> 恢复默认设置
+          </button>
         </div>
+      `;
+      document.body.appendChild(drawer);
 
-        <!-- 射线 4: 纵向 (27°) -->
-        <div class="dial-ray dial-ray-posy">
-          <span class="dial-ray-label">纵向</span>
-          <input type="range" class="dial-ray-track" id="dial-pos-y" min="0" max="100" value="${settings.posY}">
-          <span class="dial-ray-val" id="dial-val-pos-y">${settings.posY}%</span>
-        </div>
+      // 事件绑定
+      backdrop.addEventListener('click', closeDrawer);
+      document.getElementById('drawer-close-btn').addEventListener('click', closeDrawer);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDrawer();
+      });
 
-        <!-- 射线 5: 模糊 (12°) -->
-        <div class="dial-ray dial-ray-blur">
-          <span class="dial-ray-label">模糊</span>
-          <input type="range" class="dial-ray-track" id="dial-blur" min="0" max="40" value="${settings.blur}">
-          <span class="dial-ray-val" id="dial-val-blur">${settings.blur}px</span>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(dialContainer);
+      // 绑定模式按钮
+      const modeBtns = drawer.querySelectorAll('.drawer-mode-btn');
+      modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          settings.mode = btn.dataset.mode;
+          modeBtns.forEach(b => b.classList.toggle('active', b === btn));
+          saveSettings(settings);
+          applyStyles();
+        });
+      });
 
-    bindEvents(dialContainer);
+      // 绑定滑块事件
+      function bindSlider(id, key, unit, valId) {
+        const input = document.getElementById(id);
+        const valElem = document.getElementById(valId);
+        input.addEventListener('input', (e) => {
+          const v = parseInt(e.target.value, 10);
+          settings[key] = v;
+          valElem.textContent = v + unit;
+          saveSettings(settings);
+          applyStyles();
+        });
+      }
+
+      bindSlider('input-mask', 'mask', '%', 'val-mask');
+      bindSlider('input-scale', 'scale', '%', 'val-scale');
+      bindSlider('input-pos-x', 'posX', '%', 'val-pos-x');
+      bindSlider('input-pos-y', 'posY', '%', 'val-pos-y');
+      bindSlider('input-blur', 'blur', 'px', 'val-blur');
+
+      // 重置按钮
+      document.getElementById('drawer-reset-btn').addEventListener('click', () => {
+        settings = Object.assign({}, DEFAULT_SETTINGS);
+        saveSettings(settings);
+        applyStyles();
+
+        document.getElementById('input-mask').value = settings.mask;
+        document.getElementById('val-mask').textContent = settings.mask + '%';
+        document.getElementById('input-scale').value = settings.scale;
+        document.getElementById('val-scale').textContent = settings.scale + '%';
+        document.getElementById('input-pos-x').value = settings.posX;
+        document.getElementById('val-pos-x').textContent = settings.posX + '%';
+        document.getElementById('input-pos-y').value = settings.posY;
+        document.getElementById('val-pos-y').textContent = settings.posY + '%';
+        document.getElementById('input-blur').value = settings.blur;
+        document.getElementById('val-blur').textContent = settings.blur + 'px';
+
+        modeBtns.forEach(b => {
+          b.classList.toggle('active', b.dataset.mode === settings.mode);
+        });
+      });
+    }
+
+    injectTopNavButton();
   }
 
-  function bindEvents(container) {
-    const wheel = document.getElementById('bg-dial-wheel');
-
-    // 模式切换按钮
-    const modeBtns = wheel.querySelectorAll('.dial-arc-btn:not(.dial-arc-reset-btn)');
-    modeBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        modeBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        settings.mode = btn.dataset.mode;
-        applyStyles();
-        saveSettings(settings);
-      });
-    });
-
-    // 绑定滑块
-    function bindSlider(id, key, unit, valElemId) {
-      const slider = document.getElementById(id);
-      const valElem = document.getElementById(valElemId);
-      slider.addEventListener('input', () => {
-        const val = Number(slider.value);
-        settings[key] = val;
-        valElem.textContent = val + unit;
-        applyStyles();
-        saveSettings(settings);
-      });
+  function toggleDrawer() {
+    const drawer = document.getElementById('bg-settings-drawer');
+    const backdrop = document.getElementById('bg-settings-backdrop');
+    if (drawer && backdrop) {
+      const isOpen = drawer.classList.contains('open');
+      if (isOpen) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
     }
+  }
 
-    bindSlider('dial-mask', 'mask', '%', 'dial-val-mask');
-    bindSlider('dial-scale', 'scale', '%', 'dial-val-scale');
-    bindSlider('dial-pos-x', 'posX', '%', 'dial-val-pos-x');
-    bindSlider('dial-pos-y', 'posY', '%', 'dial-val-pos-y');
-    bindSlider('dial-blur', 'blur', 'px', 'dial-val-blur');
+  function openDrawer() {
+    const drawer = document.getElementById('bg-settings-drawer');
+    const backdrop = document.getElementById('bg-settings-backdrop');
+    if (drawer && backdrop) {
+      drawer.classList.add('open');
+      backdrop.classList.add('open');
+    }
+  }
 
-    // 重置按钮
-    document.getElementById('dial-reset-btn').addEventListener('click', () => {
-      settings = Object.assign({}, DEFAULT_SETTINGS);
-      saveSettings(settings);
-      applyStyles();
-
-      document.getElementById('dial-mask').value = settings.mask;
-      document.getElementById('dial-val-mask').textContent = settings.mask + '%';
-      document.getElementById('dial-scale').value = settings.scale;
-      document.getElementById('dial-val-scale').textContent = settings.scale + '%';
-      document.getElementById('dial-pos-x').value = settings.posX;
-      document.getElementById('dial-val-pos-x').textContent = settings.posX + '%';
-      document.getElementById('dial-pos-y').value = settings.posY;
-      document.getElementById('dial-val-pos-y').textContent = settings.posY + '%';
-      document.getElementById('dial-blur').value = settings.blur;
-      document.getElementById('dial-val-blur').textContent = settings.blur + 'px';
-
-      modeBtns.forEach(b => {
-        b.classList.toggle('active', b.dataset.mode === settings.mode);
-      });
-    });
+  function closeDrawer() {
+    const drawer = document.getElementById('bg-settings-drawer');
+    const backdrop = document.getElementById('bg-settings-backdrop');
+    if (drawer && backdrop) {
+      drawer.classList.remove('open');
+      backdrop.classList.remove('open');
+    }
   }
 
   // 绑定头像点击跳转 GitHub 个人主页
@@ -205,7 +273,7 @@
       link.href = 'https://github.com/hammerers';
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
-      link.title = '访问 Hammerer 的 GitHub 主页';
+      link.title = '访问 Hammerers 的 GitHub 主页';
       link.style.display = 'inline-block';
       link.style.borderBottom = 'none';
       avatar.parentNode.insertBefore(link, avatar);
