@@ -117,48 +117,43 @@
             </div>
           </div>
 
-          <!-- 5 项调节滑块 -->
+          <!-- 5 项调节滑块 (单行横向排布：icon、名称、可拉动滑块、数值) -->
           <div class="drawer-section">
             <label class="drawer-section-title">参数调节</label>
             
             <div class="drawer-slider-row">
-              <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-adjust"></i> 遮罩</span>
-                <span class="slider-value" id="val-mask">${settings.mask}%</span>
-              </div>
+              <i class="slider-icon fa fa-adjust"></i>
+              <span class="slider-name">遮罩</span>
               <input type="range" id="input-mask" class="drawer-slider" min="0" max="90" value="${settings.mask}">
+              <span class="slider-value" id="val-mask">${settings.mask}%</span>
             </div>
 
             <div class="drawer-slider-row">
-              <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-search-plus"></i> 缩放</span>
-                <span class="slider-value" id="val-scale">${settings.scale}%</span>
-              </div>
+              <i class="slider-icon fa fa-search-plus"></i>
+              <span class="slider-name">缩放</span>
               <input type="range" id="input-scale" class="drawer-slider" min="50" max="200" value="${settings.scale}">
+              <span class="slider-value" id="val-scale">${settings.scale}%</span>
             </div>
 
             <div class="drawer-slider-row">
-              <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-arrows-alt-h"></i> 横向</span>
-                <span class="slider-value" id="val-pos-x">${settings.posX}%</span>
-              </div>
+              <i class="slider-icon fa fa-arrows-alt-h"></i>
+              <span class="slider-name">横向</span>
               <input type="range" id="input-pos-x" class="drawer-slider" min="0" max="100" value="${settings.posX}">
+              <span class="slider-value" id="val-pos-x">${settings.posX}%</span>
             </div>
 
             <div class="drawer-slider-row">
-              <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-arrows-alt-v"></i> 纵向</span>
-                <span class="slider-value" id="val-pos-y">${settings.posY}%</span>
-              </div>
+              <i class="slider-icon fa fa-arrows-alt-v"></i>
+              <span class="slider-name">纵向</span>
               <input type="range" id="input-pos-y" class="drawer-slider" min="0" max="100" value="${settings.posY}">
+              <span class="slider-value" id="val-pos-y">${settings.posY}%</span>
             </div>
 
             <div class="drawer-slider-row">
-              <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-tint"></i> 模糊</span>
-                <span class="slider-value" id="val-blur">${settings.blur}px</span>
-              </div>
+              <i class="slider-icon fa fa-tint"></i>
+              <span class="slider-name">模糊</span>
               <input type="range" id="input-blur" class="drawer-slider" min="0" max="40" value="${settings.blur}">
+              <span class="slider-value" id="val-blur">${settings.blur}px</span>
             </div>
           </div>
         </div>
