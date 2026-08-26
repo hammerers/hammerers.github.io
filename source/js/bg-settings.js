@@ -95,34 +95,34 @@
       drawer.id = 'bg-settings-drawer';
       drawer.innerHTML = `
         <div class="drawer-header">
-          <div class="drawer-title"><i class="fa fa-sliders-h"></i> 视觉与背景设置</div>
-          <button id="drawer-close-btn" class="drawer-close-btn" title="关闭面板">✕</button>
+          <div class="drawer-title"><i class="fa fa-sliders-h"></i> 设置</div>
+          <button id="drawer-close-btn" class="drawer-close-btn" title="关闭">✕</button>
         </div>
 
         <div class="drawer-content">
           <!-- 填充模式分段选择器 -->
           <div class="drawer-section">
-            <label class="drawer-section-title">背景显示模式</label>
+            <label class="drawer-section-title">填充模式</label>
             <div class="drawer-mode-group">
               <button class="drawer-mode-btn ${settings.mode === 'cover' ? 'active' : ''}" data-mode="cover">
-                <i class="fa fa-expand"></i> 完整填充
+                <i class="fa fa-expand"></i> 填充
               </button>
               <button class="drawer-mode-btn ${settings.mode === 'contain' ? 'active' : ''}" data-mode="contain">
-                <i class="fa fa-compress"></i> 完整包含
+                <i class="fa fa-compress"></i> 完整
               </button>
               <button class="drawer-mode-btn ${settings.mode === 'repeat' ? 'active' : ''}" data-mode="repeat">
-                <i class="fa fa-th"></i> 图案平铺
+                <i class="fa fa-th"></i> 平铺
               </button>
             </div>
           </div>
 
           <!-- 5 项调节滑块 -->
           <div class="drawer-section">
-            <label class="drawer-section-title">参数精细调节</label>
+            <label class="drawer-section-title">参数调节</label>
             
             <div class="drawer-slider-row">
               <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-adjust"></i> 遮罩深度</span>
+                <span class="slider-name"><i class="fa fa-adjust"></i> 遮罩</span>
                 <span class="slider-value" id="val-mask">${settings.mask}%</span>
               </div>
               <input type="range" id="input-mask" class="drawer-slider" min="0" max="90" value="${settings.mask}">
@@ -130,7 +130,7 @@
 
             <div class="drawer-slider-row">
               <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-search-plus"></i> 缩放比例</span>
+                <span class="slider-name"><i class="fa fa-search-plus"></i> 缩放</span>
                 <span class="slider-value" id="val-scale">${settings.scale}%</span>
               </div>
               <input type="range" id="input-scale" class="drawer-slider" min="50" max="200" value="${settings.scale}">
@@ -138,7 +138,7 @@
 
             <div class="drawer-slider-row">
               <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-arrows-alt-h"></i> 横向位置</span>
+                <span class="slider-name"><i class="fa fa-arrows-alt-h"></i> 横向</span>
                 <span class="slider-value" id="val-pos-x">${settings.posX}%</span>
               </div>
               <input type="range" id="input-pos-x" class="drawer-slider" min="0" max="100" value="${settings.posX}">
@@ -146,7 +146,7 @@
 
             <div class="drawer-slider-row">
               <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-arrows-alt-v"></i> 纵向位置</span>
+                <span class="slider-name"><i class="fa fa-arrows-alt-v"></i> 纵向</span>
                 <span class="slider-value" id="val-pos-y">${settings.posY}%</span>
               </div>
               <input type="range" id="input-pos-y" class="drawer-slider" min="0" max="100" value="${settings.posY}">
@@ -154,7 +154,7 @@
 
             <div class="drawer-slider-row">
               <div class="slider-info">
-                <span class="slider-name"><i class="fa fa-tint"></i> 高斯模糊</span>
+                <span class="slider-name"><i class="fa fa-tint"></i> 模糊</span>
                 <span class="slider-value" id="val-blur">${settings.blur}px</span>
               </div>
               <input type="range" id="input-blur" class="drawer-slider" min="0" max="40" value="${settings.blur}">
@@ -165,7 +165,7 @@
         <!-- 底部重置 -->
         <div class="drawer-footer">
           <button id="drawer-reset-btn" class="drawer-reset-btn">
-            <i class="fa fa-redo-alt"></i> 恢复默认设置
+            <i class="fa fa-redo-alt"></i> 重置
           </button>
         </div>
       `;
