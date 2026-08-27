@@ -1,5 +1,7 @@
 /* ================================================================
-   顶部导航栏设置按钮与右侧垂直抽屉设置栏 (Top Nav Button & Right Settings Drawer)
+   背景设置抽屉与全局背景层 (Ocean Cyan & Blue Palette)
+   背景: #caf0f8
+   点缀与辅助: #90e0ef | #00b4d8 | #0077b6 | #03045e
    ================================================================ */
 
 :root {
@@ -21,6 +23,7 @@
   width: 150vw;
   height: 150vh;
   z-index: -999;
+  background-color: #caf0f8;
   background-image: var(--bg-image);
   background-position: center center;
   background-repeat: var(--bg-repeat);
@@ -40,7 +43,7 @@
   width: 100vw;
   height: 100vh;
   z-index: -998;
-  background-color: rgba(0, 0, 0, var(--bg-mask-opacity));
+  background-color: rgba(3, 4, 94, var(--bg-mask-opacity));
   pointer-events: none;
   transition: background-color 0.15s ease;
 }
@@ -50,7 +53,7 @@
   cursor: pointer !important;
 }
 
-/* 4. 抽屉背景遮罩 (点击空白处关闭) */
+/* 4. 抽屉背景遮罩 */
 #bg-settings-backdrop {
   position: fixed;
   top: 0;
@@ -58,7 +61,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 10040;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(3, 4, 94, 0.2);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   opacity: 0;
@@ -71,7 +74,7 @@
   pointer-events: auto;
 }
 
-/* 5. 右侧垂直长条抽屉栏 (高通透毛玻璃 + 从快到慢滑出动效) */
+/* 5. 右侧垂直长条抽屉栏 */
 #bg-settings-drawer {
   position: fixed;
   top: 0;
@@ -83,24 +86,21 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.42);
-  backdrop-filter: blur(24px) saturate(170%);
-  -webkit-backdrop-filter: blur(24px) saturate(170%);
-  border-left: 1.5px solid rgba(255, 255, 255, 0.65);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.12);
+  background: rgba(202, 240, 248, 0.65);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-left: 1.5px solid rgba(144, 224, 239, 0.6);
+  box-shadow: -10px 0 40px rgba(3, 4, 94, 0.12);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   user-select: none;
 
-  /* 初始关闭状态：完全缩在右侧屏幕外 */
+  /* 初始关闭状态 */
   transform: translateX(100%);
   opacity: 0;
   pointer-events: none;
-
-  /* 关闭时：从慢到快加速回缩 (Acceleration) */
   transition: transform 0.32s cubic-bezier(0.7, 0, 0.84, 0), opacity 0.25s ease-in;
 }
 
-/* 激活打开状态：从右侧从快到慢减速滑出 (Deceleration Ease-Out) */
 #bg-settings-drawer.open {
   transform: translateX(0);
   opacity: 1;
@@ -114,26 +114,26 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 22px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(144, 224, 239, 0.45);
 }
 
 .drawer-title {
   font-size: 16px;
   font-weight: 700;
-  color: #1a252f;
+  color: #03045e;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .drawer-title i {
-  color: #5a7d9a;
+  color: #0077b6;
 }
 
 .drawer-close-btn {
   background: transparent;
-  border: 1px solid rgba(90, 125, 154, 0.3);
-  color: #2c3e50;
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  color: #03045e;
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -146,9 +146,9 @@
 }
 
 .drawer-close-btn:hover {
-  background: #d9534f;
+  background: #00b4d8;
   color: #fff;
-  border-color: #d9534f;
+  border-color: #00b4d8;
   transform: rotate(90deg);
 }
 
@@ -171,12 +171,12 @@
 .drawer-section-title {
   font-size: 12px;
   font-weight: 700;
-  color: #5a7d9a;
+  color: #0077b6;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
 
-/* 模式切换按钮组 (无白底) */
+/* 模式切换按钮组 */
 .drawer-mode-group {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -185,8 +185,8 @@
 
 .drawer-mode-btn {
   background: transparent;
-  border: 1px solid rgba(90, 125, 154, 0.3);
-  color: #2c3e50;
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  color: #03045e;
   font-size: 12px;
   font-weight: 600;
   padding: 8px 4px;
@@ -201,21 +201,25 @@
 
 .drawer-mode-btn i {
   font-size: 13px;
+  color: #0077b6;
 }
 
 .drawer-mode-btn:hover {
-  background: rgba(90, 125, 154, 0.15);
-  color: #3e5d74;
+  background: rgba(144, 224, 239, 0.3);
+  color: #0077b6;
 }
 
 .drawer-mode-btn.active {
-  background: #5a7d9a;
+  background: #0077b6;
   color: #fff;
-  border-color: #3e5d74;
-  box-shadow: 0 3px 10px rgba(90, 125, 154, 0.35);
+  border-color: #03045e;
+  box-shadow: 0 3px 10px rgba(0, 119, 182, 0.35);
+}
+.drawer-mode-btn.active i {
+  color: #fff;
 }
 
-/* 滑块单行横向线性排列 (icon, 参数名, 进度条, 百分比数值) */
+/* 滑块单行横向线性排列 */
 .drawer-slider-row {
   display: flex;
   flex-direction: row;
@@ -229,7 +233,7 @@
 .slider-icon {
   width: 16px;
   text-align: center;
-  color: #5a7d9a;
+  color: #0077b6;
   font-size: 13px;
   flex-shrink: 0;
 }
@@ -237,19 +241,19 @@
 .slider-name {
   font-size: 13px;
   font-weight: 600;
-  color: #2c3e50;
+  color: #03045e;
   width: 30px;
   flex-shrink: 0;
 }
 
-/* 滑块进度条 (无白底) */
+/* 滑块进度条 */
 .drawer-slider {
   flex: 1;
   -webkit-appearance: none;
   appearance: none;
   height: 4px;
   border-radius: 2px;
-  background: rgba(90, 125, 154, 0.25);
+  background: rgba(0, 180, 216, 0.25);
   outline: none;
   margin: 0;
 }
@@ -260,38 +264,39 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #5a7d9a;
+  background: #0077b6;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(90, 125, 154, 0.5), 0 0 0 1.5px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 6px rgba(0, 119, 182, 0.45), 0 0 0 1.5px #fff;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .drawer-slider::-webkit-slider-thumb:hover {
   transform: scale(1.25);
-  box-shadow: 0 3px 10px rgba(90, 125, 154, 0.7), 0 0 0 2px rgba(255, 255, 255, 0.9);
+  background: #00b4d8;
+  box-shadow: 0 3px 10px rgba(0, 180, 216, 0.6), 0 0 0 2px #fff;
 }
 
 .slider-value {
   font-size: 12px;
   font-weight: 700;
-  color: #3e5d74;
+  color: #0077b6;
   width: 38px;
   text-align: right;
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
 }
 
-/* 抽屉底部重置按钮 (无白底) */
+/* 抽屉底部重置按钮 */
 .drawer-footer {
   padding: 16px 22px;
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba(144, 224, 239, 0.45);
 }
 
 .drawer-reset-btn {
   width: 100%;
   background: transparent;
-  border: 1px solid rgba(90, 125, 154, 0.35);
-  color: #2c3e50;
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  color: #03045e;
   font-size: 13px;
   font-weight: 600;
   padding: 9px;
@@ -305,8 +310,8 @@
 }
 
 .drawer-reset-btn:hover {
-  background: #d9534f;
+  background: #0077b6;
   color: #fff;
-  border-color: #d9534f;
-  box-shadow: 0 4px 14px rgba(217, 83, 79, 0.35);
+  border-color: #0077b6;
+  box-shadow: 0 4px 14px rgba(0, 119, 182, 0.35);
 }
