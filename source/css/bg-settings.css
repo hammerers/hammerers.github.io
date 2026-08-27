@@ -6,31 +6,41 @@
 
 :root {
   --bg-image: none;
-  --bg-mask-opacity: 0;
+  --bg-opacity: 1;
   --bg-scale: 1;
-  --bg-trans-x: 0vw;
-  --bg-trans-y: 0vh;
+  --bg-pos-x: center;
+  --bg-pos-y: center;
   --bg-blur: 0px;
   --bg-repeat: no-repeat;
   --bg-size: cover;
 }
 
-/* 1. 独立全屏背景图层 (纯净 #caf0f8 浅青蓝) */
+/* 1. 独立全屏背景图层 (基底固定浅冰蓝 #caf0f8，::before 满屏渲染背景图并由透明度精准控制) */
 #custom-bg-layer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -999;
-  background: #caf0f8 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: -999 !important;
   background-color: #caf0f8 !important;
-  pointer-events: none;
+  pointer-events: none !important;
 }
 
-/* 2. 独立背景遮罩图层 (禁用遮罩避免染色) */
-#custom-bg-mask {
-  display: none !important;
+#custom-bg-layer::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-image: var(--bg-image) !important;
+  background-position: var(--bg-pos-x) var(--bg-pos-y) !important;
+  background-repeat: var(--bg-repeat) !important;
+  background-size: var(--bg-size) !important;
+  opacity: var(--bg-opacity, 1) !important;
+  filter: blur(var(--bg-blur, 0px)) !important;
+  transition: opacity 0.15s ease, filter 0.15s ease !important;
 }
 
 /* 3. 顶部导航栏设置菜单项 */

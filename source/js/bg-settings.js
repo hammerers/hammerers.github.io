@@ -1,21 +1,25 @@
 (function () {
   'use strict';
 
-  // 默认配置项 (默认使用纯净 #caf0f8 纯色背景，不拉伸小图)
+  // 默认配置项 (图片不透明度 0%~100%，低了直接透出底层浅冰蓝)
   const DEFAULT_SETTINGS = {
-    image: '',
+    image: '/images/background.jpg',
     mode: 'cover',        // 'cover' | 'contain' | 'repeat'
-    mask: 0,              // 0% ~ 90%
+    opacity: 100,         // 0% ~ 100%
     scale: 100,           // 50% ~ 200%
     posX: 50,             // 0% ~ 100%
     posY: 50,             // 0% ~ 100%
     blur: 0               // 0px ~ 40px
   };
 
-  // 读取配置项 (纯净 #caf0f8 浅青蓝纯色)
+  // 读取配置项 (滑块记忆持久化，图片路径以 DEFAULT_SETTINGS.image 为准)
   function loadSettings() {
     try {
-      localStorage.removeItem('hexo_bg_settings');
+      const saved = localStorage.getItem('hexo_bg_settings');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return Object.assign({}, DEFAULT_SETTINGS, parsed, { image: DEFAULT_SETTINGS.image });
+      }
     } catch (e) {}
     return Object.assign({}, DEFAULT_SETTINGS);
   }
@@ -33,10 +37,9 @@
   function applyStyles() {
     const root = document.documentElement;
     root.style.setProperty('--bg-image', settings.image ? `url("${settings.image}")` : 'none');
-    root.style.setProperty('--bg-mask-opacity', (settings.mask / 100).toString());
-    root.style.setProperty('--bg-scale', (settings.scale / 100).toString());
-    root.style.setProperty('--bg-trans-x', `${(settings.posX - 50) * 0.5}vw`);
-    root.style.setProperty('--bg-trans-y', `${(settings.posY - 50) * 0.5}vh`);
+    root.style.setProperty('--bg-opacity', (settings.opacity / 100).toString());
+    root.style.setProperty('--bg-pos-x', `${settings.posX}%`);
+    root.style.setProperty('--bg-pos-y', `${settings.posY}%`);
     root.style.setProperty('--bg-blur', `${settings.blur}px`);
 
     if (settings.mode === 'repeat') {
@@ -53,16 +56,11 @@
 
   // 初始化 DOM 结构
   function initDOM() {
-    // 1. 注入全屏背景层和遮罩层
+    // 1. 注入全屏背景层
     if (!document.getElementById('custom-bg-layer')) {
       const bgLayer = document.createElement('div');
       bgLayer.id = 'custom-bg-layer';
       document.body.appendChild(bgLayer);
-    }
-    if (!document.getElementById('custom-bg-mask')) {
-      const bgMask = document.createElement('div');
-      bgMask.id = 'custom-bg-mask';
-      document.body.appendChild(bgMask);
     }
 
     // 2. 注入顶部导航栏菜单项中的设置按钮
@@ -118,10 +116,10 @@
             <label class="drawer-section-title">参数调节</label>
             
             <div class="drawer-slider-row">
-              <i class="slider-icon fa fa-adjust"></i>
-              <span class="slider-name">遮罩</span>
-              <input type="range" id="input-mask" class="drawer-slider" min="0" max="90" value="${settings.mask}">
-              <span class="slider-value" id="val-mask">${settings.mask}%</span>
+              <i class="slider-icon fa fa-eye"></i>
+              <span class="slider-name">透明</span>
+              <input type="range" id="input-opacity" class="drawer-slider" min="0" max="100" value="${settings.opacity}">
+              <span class="slider-value" id="val-opacity">${settings.opacity}%</span>
             </div>
 
             <div class="drawer-slider-row">
@@ -194,7 +192,7 @@
         });
       }
 
-      bindSlider('input-mask', 'mask', '%', 'val-mask');
+      bindSlider('input-opacity', 'opacity', '%', 'val-opacity');
       bindSlider('input-scale', 'scale', '%', 'val-scale');
       bindSlider('input-pos-x', 'posX', '%', 'val-pos-x');
       bindSlider('input-pos-y', 'posY', '%', 'val-pos-y');
@@ -206,8 +204,8 @@
         saveSettings(settings);
         applyStyles();
 
-        document.getElementById('input-mask').value = settings.mask;
-        document.getElementById('val-mask').textContent = settings.mask + '%';
+        document.getElementById('input-opacity').value = settings.opacity;
+        document.getElementById('val-opacity').textContent = settings.opacity + '%';
         document.getElementById('input-scale').value = settings.scale;
         document.getElementById('val-scale').textContent = settings.scale + '%';
         document.getElementById('input-pos-x').value = settings.posX;

@@ -4,10 +4,11 @@
    点缀与辅助: #90e0ef | #00b4d8 | #0077b6 | #03045e
    ================================================================ */
 
-/* 1. 全局背景色系 */
+/* 1. 全局背景色系（由 #custom-bg-layer 统一呈现） */
 html,
 body {
-  background-color: #caf0f8 !important;
+  background: transparent !important;
+  background-color: transparent !important;
   color: #03045e !important;
 }
 
