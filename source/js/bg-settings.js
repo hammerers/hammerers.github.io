@@ -1,9 +1,9 @@
 (function () {
   'use strict';
 
-  // 默认配置项
+  // 默认配置项 (默认使用纯净 #caf0f8 纯色背景，不拉伸小图)
   const DEFAULT_SETTINGS = {
-    image: '/images/background.gif',
+    image: '',
     mode: 'cover',        // 'cover' | 'contain' | 'repeat'
     mask: 0,              // 0% ~ 90%
     scale: 100,           // 50% ~ 200%
@@ -12,14 +12,10 @@
     blur: 0               // 0px ~ 40px
   };
 
-  // 读取已保存的设置 (滑块与模式记忆持久化，图片路径以当前 DEFAULT_SETTINGS.image 配置为主)
+  // 读取配置项 (纯净 #caf0f8 浅青蓝纯色)
   function loadSettings() {
     try {
-      const saved = localStorage.getItem('hexo_bg_settings');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return Object.assign({}, DEFAULT_SETTINGS, parsed, { image: DEFAULT_SETTINGS.image });
-      }
+      localStorage.removeItem('hexo_bg_settings');
     } catch (e) {}
     return Object.assign({}, DEFAULT_SETTINGS);
   }
@@ -36,7 +32,7 @@
   // 应用 CSS 变量到网页根节点
   function applyStyles() {
     const root = document.documentElement;
-    root.style.setProperty('--bg-image', `url("${settings.image}")`);
+    root.style.setProperty('--bg-image', settings.image ? `url("${settings.image}")` : 'none');
     root.style.setProperty('--bg-mask-opacity', (settings.mask / 100).toString());
     root.style.setProperty('--bg-scale', (settings.scale / 100).toString());
     root.style.setProperty('--bg-trans-x', `${(settings.posX - 50) * 0.5}vw`);

@@ -5,7 +5,7 @@
    ================================================================ */
 
 :root {
-  --bg-image: url("/images/background.gif");
+  --bg-image: none;
   --bg-mask-opacity: 0;
   --bg-scale: 1;
   --bg-trans-x: 0vw;
@@ -15,37 +15,22 @@
   --bg-size: cover;
 }
 
-/* 1. 独立全屏背景图层 */
+/* 1. 独立全屏背景图层 (纯净 #caf0f8 浅青蓝) */
 #custom-bg-layer {
-  position: fixed;
-  top: -25vh;
-  left: -25vw;
-  width: 150vw;
-  height: 150vh;
-  z-index: -999;
-  background-color: #caf0f8;
-  background-image: var(--bg-image);
-  background-position: center center;
-  background-repeat: var(--bg-repeat);
-  background-size: var(--bg-size);
-  filter: blur(var(--bg-blur));
-  transform: translate(var(--bg-trans-x), var(--bg-trans-y)) scale(var(--bg-scale));
-  transform-origin: center center;
-  pointer-events: none;
-  transition: filter 0.15s ease;
-}
-
-/* 2. 独立背景遮罩图层 */
-#custom-bg-mask {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -998;
-  background-color: rgba(3, 4, 94, var(--bg-mask-opacity));
+  z-index: -999;
+  background: #caf0f8 !important;
+  background-color: #caf0f8 !important;
   pointer-events: none;
-  transition: background-color 0.15s ease;
+}
+
+/* 2. 独立背景遮罩图层 (禁用遮罩避免染色) */
+#custom-bg-mask {
+  display: none !important;
 }
 
 /* 3. 顶部导航栏设置菜单项 */
