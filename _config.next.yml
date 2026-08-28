@@ -76,9 +76,17 @@ back2top:
 
 # Math formula support
 math:
+  every_page: true
   mathjax:
     enable: true
     tags: none
+
+# Mermaid diagram support
+mermaid:
+  enable: true
+  theme:
+    light: default
+    dark: dark
 
 # Table of contents
 toc:

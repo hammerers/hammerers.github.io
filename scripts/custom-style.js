@@ -5,6 +5,7 @@ hexo.extend.filter.register('after_render:html', function(str) {
   const injection = [
     '<link rel="stylesheet" href="/css/custom.css">',
     '<link rel="stylesheet" href="/css/bg-settings.css">',
+    '<script src="/js/themes-config.js" defer></script>',
     '<script src="/js/bg-settings.js" defer></script>'
   ].join('\n  ');
 

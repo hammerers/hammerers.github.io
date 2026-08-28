@@ -1,15 +1,21 @@
 /* ================================================================
-   定制海洋青蓝主题色系 (Custom Ocean Cyan & Blue Palette)
-   背景: #caf0f8
-   点缀与辅助: #90e0ef | #00b4d8 | #0077b6 | #03045e
+   动态主题色系与毛玻璃样式 (Dynamic Themes & Glassmorphism)
    ================================================================ */
+
+:root {
+  --theme-bg-base: #caf0f8;
+  --theme-accent-light: #90e0ef;
+  --theme-accent-bright: #00b4d8;
+  --theme-primary: #0077b6;
+  --theme-text-main: #03045e;
+}
 
 /* 1. 全局背景色系（由 #custom-bg-layer 统一呈现） */
 html,
 body {
   background: transparent !important;
   background-color: transparent !important;
-  color: #03045e !important;
+  color: var(--theme-text-main) !important;
 }
 
 /* 2. 侧边栏、主体卡片、评论区、页脚半透明水晶毛玻璃 */
@@ -24,7 +30,7 @@ body {
   -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
   border-radius: 14px !important;
   box-shadow: 0 8px 24px rgba(3, 4, 94, 0.07) !important;
-  border: 1px solid rgba(144, 224, 239, 0.45) !important;
+  border: 1px solid var(--theme-accent-light) !important;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
@@ -45,7 +51,7 @@ header.header {
   background: rgba(255, 255, 255, 0.5) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border-bottom: 1.5px solid rgba(144, 224, 239, 0.6) !important;
+  border-bottom: 1.5px solid var(--theme-accent-light) !important;
   box-shadow: 0 4px 20px rgba(3, 4, 94, 0.06) !important;
   border-radius: 0 !important;
   border-top: none !important;
@@ -72,7 +78,7 @@ header.header {
 .site-title {
   font-size: 20px !important;
   font-weight: 700 !important;
-  color: #03045e !important;
+  color: var(--theme-text-main) !important;
   letter-spacing: 0.5px !important;
   text-decoration: none !important;
 }
@@ -107,7 +113,7 @@ header.header {
 
 .menu .menu-item a {
   background: transparent !important;
-  color: #0077b6 !important;
+  color: var(--theme-primary) !important;
   padding: 6px 14px !important;
   font-size: 14px !important;
   border-radius: 18px !important;
@@ -118,8 +124,17 @@ header.header {
 .menu .menu-item a:hover,
 .menu .menu-item-active a {
   background: rgba(144, 224, 239, 0.35) !important;
-  color: #03045e !important;
+  color: var(--theme-text-main) !important;
   transform: translateY(-1px) !important;
+}
+
+/* 彻底移除导航栏选中项上的灰色小圆点 */
+.main-menu .menu-item-active::after,
+.menu .menu-item-active a::after,
+.menu-item-active::after,
+.menu-item-active::before {
+  display: none !important;
+  content: none !important;
 }
 
 /* 页面主容器：左侧固定头像栏 + 右侧主体居中 + 底部页脚贴底 */
@@ -169,23 +184,23 @@ aside.sidebar,
 }
 
 .site-author-name {
-  color: #03045e !important;
+  color: var(--theme-text-main) !important;
   font-weight: 700 !important;
 }
 
 .site-state-item-name {
-  color: #0077b6 !important;
+  color: var(--theme-primary) !important;
 }
 
 .site-state-item-count {
-  color: #03045e !important;
+  color: var(--theme-text-main) !important;
   font-weight: bold !important;
 }
 
 footer.footer {
   margin-top: auto !important;
   width: 100% !important;
-  color: #0077b6 !important;
+  color: var(--theme-primary) !important;
 }
 
 /* 独立搜索页面样式 */
@@ -200,7 +215,7 @@ footer.footer {
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid rgba(0, 180, 216, 0.4);
+  border: 1.5px solid var(--theme-accent-light);
   border-radius: 12px;
   padding: 12px 18px;
   margin-bottom: 16px;
@@ -208,13 +223,13 @@ footer.footer {
 }
 
 .search-page-bar:focus-within {
-  border-color: #0077b6;
+  border-color: var(--theme-primary);
   box-shadow: 0 0 16px rgba(0, 180, 216, 0.3);
   background: rgba(255, 255, 255, 0.75);
 }
 
 .search-page-bar i {
-  color: #0077b6;
+  color: var(--theme-primary);
   font-size: 16px;
 }
 
@@ -224,13 +239,13 @@ footer.footer {
   outline: none;
   background: transparent;
   font-size: 15px;
-  color: #03045e;
+  color: var(--theme-text-main);
   font-weight: 600;
 }
 
 .search-page-status {
   font-size: 13px;
-  color: #0077b6;
+  color: var(--theme-primary);
   font-weight: 600;
   margin-bottom: 20px;
 }
@@ -239,7 +254,7 @@ footer.footer {
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(144, 224, 239, 0.6);
+  border: 1px solid var(--theme-accent-light);
   border-radius: 12px;
   padding: 16px 20px;
   margin-bottom: 14px;
@@ -255,7 +270,7 @@ footer.footer {
 .search-result-title {
   font-size: 17px;
   font-weight: 700;
-  color: #03045e !important;
+  color: var(--theme-text-main) !important;
   text-decoration: none;
   display: inline-block;
   margin-bottom: 8px;
@@ -263,13 +278,13 @@ footer.footer {
 
 .search-result-snippet {
   font-size: 13px;
-  color: #0077b6;
+  color: var(--theme-primary);
   line-height: 1.6;
 }
 
 mark.search-keyword {
   background: rgba(0, 180, 216, 0.2);
-  color: #0077b6;
+  color: var(--theme-primary);
   font-weight: bold;
   border-radius: 3px;
   padding: 0 3px;
@@ -314,36 +329,36 @@ aside.sidebar,
 .site-author:hover .site-author-image {
   transform: scale(1.55) translateY(-20px) !important;
   box-shadow: 0 20px 40px rgba(3, 4, 94, 0.25), 0 0 24px rgba(0, 180, 216, 0.6) !important;
-  border-color: #00b4d8 !important;
+  border-color: var(--theme-accent-bright) !important;
   z-index: 99999 !important;
 }
 
 /* 6. 文章标题样式与链接交互 */
 .posts-expand .post-title-link {
-  color: #03045e !important;
+  color: var(--theme-text-main) !important;
   transition: color 0.2s ease-in-out !important;
 }
 .posts-expand .post-title-link:hover {
-  color: #00b4d8 !important;
+  color: var(--theme-accent-bright) !important;
 }
 
 .posts-expand .post-meta {
-  color: #0077b6 !important;
+  color: var(--theme-primary) !important;
 }
 
 /* 7. 标签与分类胶囊样式 */
 .posts-expand .post-tags a {
   background: rgba(144, 224, 239, 0.3) !important;
-  color: #0077b6 !important;
+  color: var(--theme-primary) !important;
   padding: 3px 10px !important;
   border-radius: 15px !important;
   border: 1px solid rgba(0, 180, 216, 0.2) !important;
   transition: all 0.2s ease !important;
 }
 .posts-expand .post-tags a:hover {
-  background: #00b4d8 !important;
+  background: var(--theme-accent-bright) !important;
   color: #ffffff !important;
-  border-color: #00b4d8 !important;
+  border-color: var(--theme-accent-bright) !important;
   transform: scale(1.05) !important;
 }
 
@@ -351,38 +366,38 @@ aside.sidebar,
 .highlight-wrap, .highlight, pre {
   border-radius: 10px !important;
   box-shadow: 0 4px 14px rgba(3, 4, 94, 0.06) !important;
-  border: 1px solid rgba(144, 224, 239, 0.4) !important;
+  border: 1px solid var(--theme-accent-light) !important;
 }
 
 code {
   background: rgba(144, 224, 239, 0.25) !important;
-  color: #0077b6 !important;
+  color: var(--theme-primary) !important;
   border: 1px solid rgba(0, 180, 216, 0.2) !important;
 }
 
 /* 9. 引用块 (Blockquote) */
 blockquote {
-  border-left: 4px solid #00b4d8 !important;
+  border-left: 4px solid var(--theme-accent-bright) !important;
   background-color: rgba(144, 224, 239, 0.18) !important;
   border-radius: 0 8px 8px 0 !important;
   padding: 10px 18px !important;
   margin: 1.2em 0 !important;
-  color: #03045e !important;
+  color: var(--theme-text-main) !important;
 }
 
 /* 10. 按钮与阅读全文 */
 .btn,
 .post-button a {
-  background: #0077b6 !important;
+  background: var(--theme-primary) !important;
   color: #ffffff !important;
-  border: 1px solid #0077b6 !important;
+  border: 1px solid var(--theme-primary) !important;
   border-radius: 6px !important;
   transition: all 0.2s ease !important;
 }
 .btn:hover,
 .post-button a:hover {
-  background: #00b4d8 !important;
-  border-color: #00b4d8 !important;
+  background: var(--theme-accent-bright) !important;
+  border-color: var(--theme-accent-bright) !important;
   color: #ffffff !important;
 }
 
@@ -400,4 +415,70 @@ blockquote {
 }
 ::-webkit-scrollbar-track {
   background: transparent !important;
+}
+
+/* 12. 首页精简文章列表模式 (隐藏全文内容，仅展示文章标题、发布日期与所属分类) */
+.index.posts-expand .post-body,
+.index.posts-expand .post-eof,
+.index.posts-expand .post-button {
+  display: none !important;
+}
+
+.index.posts-expand .post-block {
+  padding: 20px 28px !important;
+  margin-bottom: 16px !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 18px rgba(3, 4, 94, 0.06) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+.index.posts-expand .post-header {
+  margin-bottom: 0 !important;
+  text-align: left !important;
+}
+
+.index.posts-expand .post-title {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  text-align: left !important;
+  margin: 0 0 10px 0 !important;
+}
+
+.index.posts-expand .post-title-link {
+  color: var(--theme-text-main) !important;
+  text-decoration: none !important;
+}
+
+.index.posts-expand .post-title-link:hover {
+  color: var(--theme-accent-bright) !important;
+}
+
+.index.posts-expand .post-meta-container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 16px !important;
+  justify-content: flex-start !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+}
+
+.index.posts-expand .post-meta-container .post-meta-item {
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+.index.posts-expand .post-meta-container a {
+  color: var(--theme-primary) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.index.posts-expand .post-meta-container a:hover {
+  color: var(--theme-accent-bright) !important;
 }

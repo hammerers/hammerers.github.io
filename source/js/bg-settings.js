@@ -1,10 +1,26 @@
 (function () {
   'use strict';
 
+  const PRESETS = window.PRESET_THEMES || [
+    {
+      id: 'ocean-cyan',
+      name: '海洋浅青',
+      colors: ['#caf0f8', '#90e0ef', '#00b4d8', '#0077b6', '#03045e'],
+      vars: {
+        bgBase: '#caf0f8',
+        accentLight: '#90e0ef',
+        accentBright: '#00b4d8',
+        primary: '#0077b6',
+        textMain: '#03045e'
+      }
+    }
+  ];
+
   // 默认配置项 (图片不透明度 0%~100%，低了直接透出底层浅冰蓝)
   const DEFAULT_SETTINGS = {
     image: '/images/background.jpg',
     mode: 'cover',        // 'cover' | 'contain' | 'repeat'
+    themeId: 'ocean-cyan',// 默认主题配色方案 ID
     opacity: 100,         // 0% ~ 100%
     scale: 100,           // 50% ~ 200%
     posX: 50,             // 0% ~ 100%
@@ -12,7 +28,7 @@
     blur: 0               // 0px ~ 40px
   };
 
-  // 读取配置项 (滑块记忆持久化，图片路径以 DEFAULT_SETTINGS.image 为准)
+  // 读取配置项 (滑块与主题记忆持久化，图片路径以 DEFAULT_SETTINGS.image 为准)
   function loadSettings() {
     try {
       const saved = localStorage.getItem('hexo_bg_settings');
@@ -52,6 +68,16 @@
       root.style.setProperty('--bg-repeat', 'no-repeat');
       root.style.setProperty('--bg-size', 'cover');
     }
+
+    // 动态应用主题色系变量
+    const activeTheme = PRESETS.find(t => t.id === settings.themeId) || PRESETS[0];
+    if (activeTheme && activeTheme.vars) {
+      root.style.setProperty('--theme-bg-base', activeTheme.vars.bgBase);
+      root.style.setProperty('--theme-accent-light', activeTheme.vars.accentLight);
+      root.style.setProperty('--theme-accent-bright', activeTheme.vars.accentBright);
+      root.style.setProperty('--theme-primary', activeTheme.vars.primary);
+      root.style.setProperty('--theme-text-main', activeTheme.vars.textMain);
+    }
   }
 
   // 初始化 DOM 结构
@@ -86,6 +112,15 @@
       backdrop.id = 'bg-settings-backdrop';
       document.body.appendChild(backdrop);
 
+      const themeOptionsHtml = PRESETS.map(t => `
+        <label class="theme-option-row" data-theme-id="${t.id}">
+          <input type="checkbox" class="theme-checkbox" ${settings.themeId === t.id ? 'checked' : ''}>
+          <div class="theme-swatch-strip" title="${t.name}">
+            ${t.colors.map(c => `<div class="theme-swatch-block" style="background: ${c};"></div>`).join('')}
+          </div>
+        </label>
+      `).join('');
+
       const drawer = document.createElement('div');
       drawer.id = 'bg-settings-drawer';
       drawer.innerHTML = `
@@ -95,6 +130,14 @@
         </div>
 
         <div class="drawer-content">
+          <!-- 预设配色方案 (5:1 比例无缝色卡长方形 + Checkbox) -->
+          <div class="drawer-section">
+            <label class="drawer-section-title">主题配色</label>
+            <div class="theme-options-list">
+              ${themeOptionsHtml}
+            </div>
+          </div>
+
           <!-- 填充模式分段选择器 -->
           <div class="drawer-section">
             <label class="drawer-section-title">填充模式</label>
@@ -168,6 +211,22 @@
         if (e.key === 'Escape') closeDrawer();
       });
 
+      // 绑定主题切换 Checkbox
+      const themeRows = drawer.querySelectorAll('.theme-option-row');
+      themeRows.forEach(row => {
+        row.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = row.dataset.themeId;
+          settings.themeId = targetId;
+          themeRows.forEach(r => {
+            const cb = r.querySelector('.theme-checkbox');
+            if (cb) cb.checked = (r.dataset.themeId === targetId);
+          });
+          saveSettings(settings);
+          applyStyles();
+        });
+      });
+
       // 绑定模式按钮
       const modeBtns = drawer.querySelectorAll('.drawer-mode-btn');
       modeBtns.forEach(btn => {
@@ -203,6 +262,11 @@
         settings = Object.assign({}, DEFAULT_SETTINGS);
         saveSettings(settings);
         applyStyles();
+
+        themeRows.forEach(r => {
+          const cb = r.querySelector('.theme-checkbox');
+          if (cb) cb.checked = (r.dataset.themeId === settings.themeId);
+        });
 
         document.getElementById('input-opacity').value = settings.opacity;
         document.getElementById('val-opacity').textContent = settings.opacity + '%';
