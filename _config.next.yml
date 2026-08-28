@@ -22,11 +22,11 @@ custom_file_path:
 
 # Menu Settings
 menu:
-  home: / || fa fa-home
-  tags: /tags/ || fa fa-tags
-  categories: /categories/ || fa fa-th
-  archives: /archives/ || fa fa-archive
-  search: /search/ || fa fa-search
+  home: /
+  tags: /tags/
+  categories: /categories/
+  archives: /archives/
+  search: /search/
 
 # Sidebar Settings
 sidebar:
